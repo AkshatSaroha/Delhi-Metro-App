@@ -32,33 +32,6 @@ import java.io.*;
 			vtces.put(vname, vtx);
 		}
 
-//		public void removeVertex(String vname) 
-//		{
-//			Vertex vtx = vtces.get(vname);
-//			ArrayList<String> keys = new ArrayList<>(vtx.nbrs.keySet());
-//
-//			for (String key : keys) 
-//			{
-//				Vertex nbrVtx = vtces.get(key);
-//				nbrVtx.nbrs.remove(vname);
-//			}
-//
-//			vtces.remove(vname);
-//		}
-
-//		public int numEdges() 
-//		{
-//			ArrayList<String> keys = new ArrayList<>(vtces.keySet());
-//			int count = 0;
-//
-//			for (String key : keys) 
-//			{
-//				Vertex vtx = vtces.get(key);
-//				count = count + vtx.nbrs.size();
-//			}
-//
-//			return count / 2;
-//		}
 
 		public boolean containsEdge(String vname1, String vname2) 
 		{
@@ -85,19 +58,6 @@ import java.io.*;
 			vtx2.nbrs.put(vname1, value);
 		}
 
-//		public void removeEdge(String vname1, String vname2) 
-//		{
-//			Vertex vtx1 = vtces.get(vname1);
-//			Vertex vtx2 = vtces.get(vname2);
-//			
-//			//check if the vertices given or the edge between these vertices exist or not
-//			if (vtx1 == null || vtx2 == null || !vtx1.nbrs.containsKey(vname2)) {
-//				return;
-//			}
-//
-//			vtx1.nbrs.remove(vname2);
-//			vtx2.nbrs.remove(vname1);
-//		}
 
 		public void display_Map() 
 		{
@@ -156,10 +116,9 @@ import java.io.*;
 			Vertex vtx = vtces.get(vname1);
 			ArrayList<String> nbrs = new ArrayList<>(vtx.nbrs.keySet());
 
-			//TRAVERSE THE NBRS OF THE VERTEX
+			//Traverse the nbrs of the vertex
 			for (String nbr : nbrs) 
 			{
-
 				if (!processed.containsKey(nbr))
 					if (hasPath(nbr, vname2, processed))
 						return true;
@@ -467,51 +426,6 @@ import java.io.*;
 			g.addEdge("Punjabi Bagh West~P", "Netaji Subhash Place~PR", 3);
 		}
 		
-		public static String[] printCodelist()
-		{
-			System.out.println("List of station along with their codes:\n");
-			ArrayList<String> keys = new ArrayList<>(vtces.keySet());
-			int i=1,j=0,m=1;
-			StringTokenizer stname;
-			String temp="";
-			String codes[] = new String[keys.size()];
-			char c;
-			for(String key : keys) 
-			{
-				stname = new StringTokenizer(key);
-				codes[i-1] = "";
-				j=0;
-				while (stname.hasMoreTokens())
-				{
-				        temp = stname.nextToken();
-				        c = temp.charAt(0);
-				        while (c>47 && c<58)
-				        {
-				                codes[i-1]+= c;
-				                j++;
-				                c = temp.charAt(j);
-				        }
-				        if ((c<48 || c>57) && c<123)
-				                codes[i-1]+= c;
-				}
-				if (codes[i-1].length() < 2)
-					codes[i-1]+= Character.toUpperCase(temp.charAt(1));
-				            
-				System.out.print(i + ". " + key + "\t");
-				if (key.length()<(22-m))
-                    			System.out.print("\t");
-				if (key.length()<(14-m))
-                    			System.out.print("\t");
-                    		if (key.length()<(6-m))
-                    			System.out.print("\t");
-                    		System.out.println(codes[i-1]);
-				i++;
-				if (i == (int)Math.pow(10,m))
-				        m++;
-			}
-			return codes;
-		}
-		
 		public static void main(String[] args) throws IOException
 		{
 			Graph_M g = new Graph_M();
@@ -553,7 +467,7 @@ import java.io.*;
 				case 3:
 					ArrayList<String> keys = new ArrayList<>(vtces.keySet());
 					String codes[] = printCodelist();
-					System.out.println("\n1. TO ENTER SERIAL NO. OF STATIONS\n2. TO ENTER CODE OF STATIONS\n3. TO ENTER NAME OF STATIONS\n");
+					System.out.println("\n1. TO ENTER SERIAL NO. OF STATIONS.\n2. TO ENTER NAME OF STATIONS\n");
 					System.out.println("ENTER YOUR CHOICE:");
 				        int ch = Integer.parseInt(inp.readLine());
 					int j;
@@ -566,20 +480,6 @@ import java.io.*;
 					    st2 = keys.get(Integer.parseInt(inp.readLine())-1);
 					}
 					else if (ch == 2)
-					{
-					    String a,b;
-					    a = (inp.readLine()).toUpperCase();
-					    for (j=0;j<keys.size();j++)
-					       if (a.equals(codes[j]))
-					           break;
-					    st1 = keys.get(j);
-					    b = (inp.readLine()).toUpperCase();
-					    for (j=0;j<keys.size();j++)
-					       if (b.equals(codes[j]))
-					           break;
-					    st2 = keys.get(j);
-					}
-					else if (ch == 3)
 					{
 					    st1 = inp.readLine();
 					    st2 = inp.readLine();
