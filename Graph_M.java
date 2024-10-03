@@ -33,6 +33,7 @@ import java.io.*;
 		}
 
 
+
 		public boolean containsEdge(String vname1, String vname2) 
 		{
 			Vertex vtx1 = vtces.get(vname1);
@@ -57,6 +58,7 @@ import java.io.*;
 			vtx1.nbrs.put(vname2, value);
 			vtx2.nbrs.put(vname1, value);
 		}
+
 
 
 		public void display_Map() 
@@ -116,9 +118,10 @@ import java.io.*;
 			Vertex vtx = vtces.get(vname1);
 			ArrayList<String> nbrs = new ArrayList<>(vtx.nbrs.keySet());
 
-			//Traverse the nbrs of the vertex
+			//TRAVERSE THE NBRS OF THE VERTEX
 			for (String nbr : nbrs) 
 			{
+
 				if (!processed.containsKey(nbr))
 					if (hasPath(nbr, vname2, processed))
 						return true;
@@ -133,7 +136,7 @@ import java.io.*;
 			String vname;
 			String psf;
 			int cost;
-			
+
 			@Override
 			public int compareTo(DijkstraPair o) 
 			{
@@ -330,7 +333,6 @@ import java.io.*;
 					// process only unprocessed nbrs
 					if (!processed.containsKey(nbr)) {
 
-						// make a new pair of nbr and put in queue
 						Pair np = new Pair();
 						np.vname = nbr;
 						np.psf = rp.psf + nbr + "  ";
@@ -378,8 +380,17 @@ import java.io.*;
 				}
 			}
 			arr.add(Integer.toString(count));
-			arr.add(res[res.length-1]);
+			arr.add(res[res.length-1]);// adds last station
 			return arr;
+		}
+		
+		public FareCalculator.FareDetails getFareDetails(String source, String destination, 
+                String passengerType) {
+// Get distance using existing dijkstra method
+			double distance = dijkstra(source, destination, false);
+			
+			// Calculate fare based on distance and passenger type
+			return FareCalculator.calculateFare(distance, passengerType);
 		}
 		
 		public static void Create_Metro_Map(Graph_M g)
@@ -434,7 +445,7 @@ import java.io.*;
 			System.out.println("\n\t\t\t****WELCOME TO THE METRO APP*****");
 			
 			BufferedReader inp = new BufferedReader(new InputStreamReader(System.in));
-			// int choice = Integer.parseInt(inp.readLine());
+//			 int choice = Integer.parseInt(inp.readLine());
 			
 			while(true)
 			{
@@ -445,12 +456,13 @@ import java.io.*;
 				System.out.println("4. GET SHORTEST TIME TO REACH FROM A 'SOURCE' STATION TO 'DESTINATION' STATION");
 				System.out.println("5. GET SHORTEST PATH (DISTANCE WISE) TO REACH FROM A 'SOURCE' STATION TO 'DESTINATION' STATION");
 				System.out.println("6. GET SHORTEST PATH (TIME WISE) TO REACH FROM A 'SOURCE' STATION TO 'DESTINATION' STATION");
-				System.out.println("7. EXIT THE MENU");
-				System.out.print("\nENTER YOUR CHOICE FROM THE ABOVE LIST (1 to 7) : ");
+				System.out.println("7. CALCULATE FARE BETWEEN 'SOURCE' STATION AND 'DESTINATION' STATION");
+				System.out.println("8. EXIT THE MENU");
+				System.out.print("\nENTER YOUR CHOICE FROM THE ABOVE LIST (1 to 8) : ");
 				int choice = -1;
 				choice = Integer.parseInt(inp.readLine());				
 				System.out.print("\n***********************************************************\n");
-				if(choice == 7)
+				if(choice == 8)
 				{
 					System.exit(0);
 				}
@@ -466,11 +478,11 @@ import java.io.*;
 				
 				case 3:
 					ArrayList<String> keys = new ArrayList<>(vtces.keySet());
-					String codes[] = printCodelist();
-					System.out.println("\n1. TO ENTER SERIAL NO. OF STATIONS.\n2. TO ENTER NAME OF STATIONS\n");
+//					String codes[] = printCodelist();
+					g.display_Stations();
+					System.out.println("\n1. TO ENTER SERIAL NO. OF STATIONS\n2. TO ENTER NAME OF STATIONS\n");
 					System.out.println("ENTER YOUR CHOICE:");
 				        int ch = Integer.parseInt(inp.readLine());
-					int j;
 						
 					String st1 = "", st2 = "";
 					System.out.println("ENTER THE SOURCE AND DESTINATION STATIONS");
@@ -479,6 +491,7 @@ import java.io.*;
 					    st1 = keys.get(Integer.parseInt(inp.readLine())-1);
 					    st2 = keys.get(Integer.parseInt(inp.readLine())-1);
 					}
+
 					else if (ch == 2)
 					{
 					    st1 = inp.readLine();
@@ -498,10 +511,31 @@ import java.io.*;
 					break;
 				
 				case 4:
-					System.out.print("ENTER THE SOURCE STATION NAME: ");
-					String sat1 = inp.readLine();
-					System.out.print("ENTER THE DESTINATION STATION NAME: ");
-					String sat2 = inp.readLine();
+					ArrayList<String> keys02 = new ArrayList<>(vtces.keySet());
+//					String codes[] = printCodelist();
+					g.display_Stations();
+					System.out.println("\n1. TO ENTER SERIAL NO. OF STATIONS\n2. TO ENTER NAME OF STATIONS\n");
+					System.out.println("ENTER YOUR CHOICE:");
+				        int ch02 = Integer.parseInt(inp.readLine());
+						
+					String sat1 = "", sat2 = "";
+					System.out.println("ENTER THE SOURCE AND DESTINATION STATIONS");
+					if (ch02 == 1)
+					{
+					    sat1 = keys02.get(Integer.parseInt(inp.readLine())-1);
+					    sat2 = keys02.get(Integer.parseInt(inp.readLine())-1);
+					}
+
+					else if (ch02 == 2)   
+					{
+					    sat1 = inp.readLine();
+					    sat2 = inp.readLine();
+					}
+					else
+					{
+					    System.out.println("Invalid choice");
+					    System.exit(0);
+					}
 				
 					HashMap<String, Boolean> processed1= new HashMap<>();				
 					System.out.println("SHORTEST TIME FROM ("+sat1+") TO ("+sat2+") IS "+g.dijkstra(sat1, sat2, true)/60+" MINUTES\n\n");
@@ -563,8 +597,43 @@ import java.io.*;
 						System.out.println("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 					}
 					break;	
-               	         default: 
-                    	        System.out.println("Please enter a valid option! ");
+					case 7: // New option for fare calculation
+						ArrayList<String> keys03 = new ArrayList<>(vtces.keySet());
+//						String codes[] = printCodelist();
+						g.display_Stations();
+						System.out.println("\n1. TO ENTER SERIAL NO. OF STATIONS\n2. TO ENTER NAME OF STATIONS\n");
+						System.out.println("ENTER YOUR CHOICE:");
+					    int ch07 = Integer.parseInt(inp.readLine());
+							
+						String srcStation = "", destStation = "";
+						System.out.println("ENTER THE SOURCE AND DESTINATION STATIONS");
+						if (ch07 == 1)
+						{
+							srcStation = keys03.get(Integer.parseInt(inp.readLine())-1);
+							destStation = keys03.get(Integer.parseInt(inp.readLine())-1);
+						}
+
+						else if (ch07 == 2)   
+						{
+							srcStation = inp.readLine();
+						    destStation = inp.readLine();
+						}
+						else
+						{
+						    System.out.println("Invalid choice");
+						    System.exit(0);
+						}
+		                
+		                
+		                System.out.println("ENTER PASSENGER TYPE (REGULAR/SENIOR/STUDENT): ");
+		                String passengerType = inp.readLine();
+		                
+		                FareCalculator.FareDetails fare = g.getFareDetails(srcStation, destStation, passengerType);
+		                System.out.println("\nFARE BREAKDOWN:");
+		                System.out.println(fare.fareBreakdown);
+		                break;
+               	        default: 
+               	        		System.out.println("Please enter a valid option! ");
                         	    System.out.println("The options you can choose are from 1 to 6. ");
                             
 				}
